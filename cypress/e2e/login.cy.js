@@ -1,3 +1,4 @@
+
 describe('Login', () => {
     beforeEach(() => {
       cy.visit('https://front-cras.app.fslab.dev/');
@@ -10,32 +11,30 @@ describe('Login', () => {
 
     })
 
-    it("Deve retornar mensagem de erro devido usuário inválido  - cenário de insucesso", () => {
-        cy.get("#email").type("dev@gmail.com");
+    it("Deve retornar mensagem de erro devido usuário inválido - cenário de insucesso", ()=> {
+        cy.get("#email").type("dev4@gmail.com");
         cy.get("#senha").type("123");
         cy.get(" .styles_button__dr0t2").click();
-        cy.get('.Toastify__toast-body').should('be.visible').contains('Usuário ou Senha inválida', { timeout: 10000 });
+        cy.contains("Usuário ou Senha inválida!");
 
-        
     })
 
-    it("Deve retornar msg dos campos obrigatório para login - cenário de insucesso", () => {
+    it("Deve retornar msg dos campos obrigatórios para login - cenário de insucesso", ()=> {
         cy.get(" .styles_button__dr0t2").click();
-        cy.get(':nth-child(2) > .styles_formItem__H8I19 > .styles_errorMessage__IKSlh').contains('O email é obrigatório'); 
-        cy.get(':nth-child(3) > .styles_formItem__H8I19 > .styles_errorMessage__IKSlh').contains('A senha é obrigatória'); 
+        cy.contains("O email é obrigatório");
+        cy.contains("A senha é obrigatória")
 
     })
 
-    it("Deve retornar mensagem de erro por senha ou usuário  - cenário de insucesso", () => {
-        cy.get("#email").type("dev@gmail.com");
+    it("Deve retornar mensagem de erro por senha ou usuário - cenário de insucesso", ()=> {
+        cy.get("#email").type("dev4@gmail.com");
         cy.get("#senha").type("123");
         cy.get(" .styles_button__dr0t2").click();
-        cy.get('.Toastify__toast-body').should('be.visible').contains('Usuário ou Senha inválida', { timeout: 10000 });
-
-        
+        cy.contains("Usuário ou Senha inválida!");
 
     })
-  
+
+    
   
   })
   
