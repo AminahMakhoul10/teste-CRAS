@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "cypress": "^13.4.0",
+    "faker": "^6.6.6",
     "faker-br": "^0.4.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }
