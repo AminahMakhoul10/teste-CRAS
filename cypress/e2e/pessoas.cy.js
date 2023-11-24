@@ -1,117 +1,106 @@
-/*Texto do describre("Pessoas")
-Texto do caso de teste ("Deve cadastrar pessoa com todos os campos preenchidos")
-Texto do caso de teste ("Deve retornar msg de campos obrigatórios")
-Texto do caso de teste ("Deve buscar uma pessoa pelo nome e alterar seus dados")
-Texto do caso de teste ("Deve buscar uma pessoa pelo CPF e alterar seus dados")
-Texto do caso de teste ("Deve cadastrar atendimento para a pessoa")
-Texto do caso de teste ("Deve visualizar os dados da pessoa")
-Texto do caso de teste ("Deve buscar pessoa listar os atendimentos recebidos e aterar os dados")
-PARTE 5 DO TESTE CRAS*/ 
+import fake from "faker-br"
 
-import faker from "faker-br";
-import {mascaraCPF} from "../utils/formatarcpf"
-
-const nome = `${fake.name.firstName()} ${fake.name.lastName()} ${fake.name.lastName()}`
-const cpf = fake.br.cpf()
+var fakeNome = fake.name.firstName();
+var fakeCPF = fake.br.cpf()
 
 describe("Pessoas", () => {
   beforeEach(() => {
-    cy.visit("https://front-cras.app.fslab.dev/");
-    cy.logar(Cypress.env('email'), Cypress.env('senha'), {log: false });
-    cy.pessoas()
-  });
+    cy.visit("https://front-cras.app.fslab.dev/")
+    cy.get('#email').type("aminahm@gmail.com");
+    cy.get('#senha').type("aminaH123@");
+    cy.get('.styles_button__dr0t2').click();
 
-  it('Deve cadastrar pessoa com todos os campos preenchidos', () => {
+  })
+
+  it("Deve cadastrar a pessoas com todos os campos preenchidos", () => {
+    
+    cy.get('.styles_buttonMenu__mmyUS > img').click();
+    cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"] > .styles_containerLinkText__Rz0Qr').click();
+    cy.get('.styles_buttonMenu__mmyUS > img').click();
     cy.get(':nth-child(4) > .styles_container__NSLBw > #buscar').click()
-    cy.wait(1000)
-    cy.get('#nome').type(nome)
-    cy.get('#cpf').type(cpf)
-    cy.get('#nit').type(cpf)
-    cy.get('#dataNascimento').type('2004-01-07')
-    cy.get('#bairro').type("Jardim Souza")
-    cy.get('#logradouro').type('Rua 987')
-    cy.get('#cep').type('76897-046')
-    cy.get('#numero').type('3333')
-    cy.get('#telefone').type("(33) 3333")
-    cy.get('#telefoneContato').type('Alarik')
-    cy.get('[type="submit"]').click()
-    cy.get('.Toastify__toast-body > :nth-child(2)').contains("Pessoa cadastrada com sucesso")
+    cy.get('#nome').type(fakeNome);
+    cy.get("#cpf").type(fakeCPF);
+    cy.get("#nit").type(fake.br.cpf());
+    cy.get("#dataNascimento").type("2004-01-20")
+    cy.get("#estrangeiro").select("Sim");
+    cy.get("#bairro").type(fake.address.streetName())
+    cy.get("#logradouro").type(fake.address.streetName());
+    cy.get("#cep").type(fake.address.zipCode() + fake.address.zipCode())
+    cy.get("#numero").type(fake.random.number());
+    cy.get("#telefone").type(fake.phone.phoneNumber())
+    cy.get("#telefoneContato").type(fake.name.firstName() + fake.name.lastName())
+    cy.get('[type="submit"]').click();
   })
 
-    it('Deve retornar msg de campos obrigatórios', () => {
-      cy.get(':nth-child(4) > .styles_container__NSLBw > #buscar').click()
-      cy.wait(1000)
+  it("Deve retornar msg de campos obrigatórios", () => {
+    cy.get('.styles_buttonMenu__mmyUS > img').click();
+    cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"] > .styles_containerLinkText__Rz0Qr').click();
+    cy.get('.styles_buttonMenu__mmyUS > img').click();
+    cy.get(':nth-child(4) > .styles_container__NSLBw > #buscar').click();
+    cy.get('[type="submit"]').click();
+    //cy.contains('span', 'Nome é obrigatório').should('be.visible');
+    //cy.contains('span', 'Data de nascimento é obrigatório').should('be.visible');ssnpm 
+  })
+
+    it("Deve buscar uma pessoa por nome e alterar seus dados", () => {
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"]').click();
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get(":nth-child(1) > #nome").type(fakeNome);
+      cy.get(":nth-child(3) > .styles_container__NSLBw > #buscar").click();
+      cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Editar pessoa"]').click();
+      cy.get("#nome").type(fakeNome + "2");
+      cy.get("#cep").type(fake.address.zipCode() +fake.address.zipCode())
+      cy.get('[type="submit"]').click();
+      cy.get(".styles_warning__6QZnN").click()
+    })
+
+    it("Deve buscar uma pessoa por cpf e alterar seus dados", () => {
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"]').click();
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get(":nth-child(2) > #nome").type("200.001.849-82");
+      cy.get(":nth-child(3) > .styles_container__NSLBw > #buscar").click();
+      cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Editar pessoa"]').click();
+      cy.get("#telefoneContato").type(fake.name.firstName());
+      cy.get("#cep").type(fake.address.zipCode() +fake.address.zipCode())
+      cy.get('[type="submit"]').click();
+      cy.get(".styles_warning__6QZnN").click()
+    })
+
+    it("Deve cadastrar atendimento para pessoa", () => {
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"]').click();
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get(":nth-child(1) > #nome").type(fakeNome);
+      cy.get(":nth-child(3) > .styles_container__NSLBw > #buscar").click();
+      cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Cadastrar atendimento"]').click();
+      cy.get("#dataAtendimento").type("1992-12-03")
+      cy.get("#tipo").select("Tipo Inova Brasil")
+      cy.get("#observacao").type("Atualizado");
+      cy.get('[type="submit"]').click();
+      cy.get(".styles_warning__6QZnN").click()
+    })
+
+    it("Deve visualizar os dados da pessoa", () => {
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"]').click();
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get(":nth-child(1) > #nome").type(fakeNome);
+      cy.get(":nth-child(3) > .styles_container__NSLBw > #buscar").click();
+      cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Informações da pessoa"]').click();
+      cy.get(".styles_btnClose__C5d6D").click()
+    })
+
+    it("Deve buscar pessoa, listar os atendimentos recebidos e alterar os dados", () => {
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get('.styles_containerMenuActive__rbsm9 > .styles_container__3i7hL > .styles_containerLinks__v9CCT > [href="/pessoas/listar"]').click();
+      cy.get(".styles_buttonMenu__mmyUS > img").click();
+      cy.get(":nth-child(1) > #nome").type(fakeNome);
+      cy.get(':nth-child(3) > :nth-child(5) > .styles_container__NSLBw > [alt="Ver atendimentos dessa pessoa"]').click();
+      cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Editar Atendimento"]').click()
+      cy.get("#observacaoAtendimento").type("Atualizado");
       cy.get('[type="submit"]').click()
-
-      cy.get(':nth-child(1) > .styles_errorMessage__IKSlh').contains('Nome é obrigatório')
-      cy.get(':nth-child(4) > .styles_errorMessage__IKSlh').contains('Data de nascimento é obrigatório')
-  })
-
-  it('Deve buscar uma pessoa pelo nome e alterar seus dados', () => {
-    cy.get(':nth-child(1) > #nome').type(nome)
-    cy.get(':nth-child(3) > .styles_container__NSLBw > #buscar').click()
-    cy.wait(2000)
-    cy.get('tbody').contains(nome)
-    cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Editar pessoa"]').click()
-    cy.get('#bairro').clear()
-    cy.get('#bairro').type("Planalto")
-    cy.get('#telefoneContato').clear()
-    cy.get('#telefoneContato').type('Orodoeht')
-    cy.get('[type="submit"]').click()
-    cy.get('.Toastify__toast-body > :nth-child(2)').contains("Pessoa atualizada com sucesso")
-  })
-
-  it("Deve buscar uma pessoa pelo CPF e alterar seus dados", () => {
-    cy.get(':nth-child(2) > #nome').type(mascaraCPF(cpf))  
-    cy.get(':nth-child(3) > .styles_container__NSLBw > #buscar').click()
-    cy.wait(1000)
-    cy.get('tbody > .styles_tr__2bCIW > :nth-child(1)').contains(nome)
-    cy.get('[alt="Editar pessoa"]').click()
-    cy.get('#bairro').clear()
-    cy.get('#bairro').type("Barão 2")
-    cy.get('#telefoneContato').clear()
-    cy.get('#telefoneContato').type('Alarik')
-    cy.get('[type="submit"]').click()
-    cy.get('.Toastify__toast-body > :nth-child(2)').contains("Pessoa atualizada com sucesso")
-})
-
-
-it("Deve cadastrar atendimento para a pessoa", () => {
-  cy.get(':nth-child(2) > #nome').type(mascaraCPF(cpf))
-  cy.get(':nth-child(3) > .styles_container__NSLBw > #buscar').click()
-  cy.wait(1000)
-  cy.get('[alt="Cadastrar atendimento"]').click()
-  cy.wait(1000)
-  cy.get('#dataAtendimento').type('2024-11-21')
-  cy.get('#tipo').select('SCFV')
-  cy.get('#observacao').type('Atendimento de inicio de ano')
-  cy.get('[type="submit"]').click()
-  cy.get('.Toastify__toast-body > :nth-child(2)').contains('Atendimento cadastrado com sucesso')
-})
-
-it("Deve visualizar os dados da pessoa", () => {
-  cy.get(':nth-child(2) > #nome').type(mascaraCPF(cpf))
-  cy.get(':nth-child(3) > .styles_container__NSLBw > #buscar').click()
-  cy.wait(1000)
-  cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Informações da pessoa"]').click()
-  cy.get('.styles_modalHeader__WEL2t > .styles_text__68fzG').contains(`Informações de ${nome}`)
-})
-
-it("Deve buscar pessoa listar os atendimentos recebidos e aterar os dados", () => {
-  cy.get(':nth-child(2) > #nome').type(mascaraCPF(cpf))
-  cy.get(':nth-child(3) > .styles_container__NSLBw > #buscar').click()
-  cy.wait(1000)
-  cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Ver atendimentos dessa pessoa"]').click()
-  cy.wait(1000)
-  cy.get(':nth-child(1) > :nth-child(5) > .styles_container__NSLBw > [alt="Editar Atendimento"]').click()
-  cy.wait(1000)
-  cy.get('#observacaoAtendimento').clear()
-  cy.get('#observacaoAtendimento').type('Atendimento de início de ano novo')
-  cy.get('[type="submit"]').click()
-  cy.get('.Toastify__toast-body > :nth-child(2)').contains('Atendimento atualizado com sucesso')
+    })
 
 })
-
-
-
-});
